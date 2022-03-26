@@ -21,6 +21,8 @@ The data was extracted from the Open Data DC website. There is a treasure trove 
 
 This is a great data set that you can use to better your data analysis and visualization skills as it contains 25 attributes that make up the data set. You can explore service order dates tied to request resolution to mapping out where the Service Calls are located using Latitude and Longitude coordinates the analysis that can be done on this data set is endless.
 
+The below visualizations are dynamic so as the data set is updated with new information so will the visualizations. 
+
 ## Lets get started...
 
 
@@ -296,7 +298,7 @@ heatmap_day_hour_2022 <- df_2022 %>%
     ),
     plot.title = element_markdown(
       family = "patua-one",
-      size = 20,
+      # size = 20,
       margin = margin(b = 5)
     ),
     plot.subtitle = element_markdown(margin = margin(b = 10)),
@@ -307,7 +309,7 @@ heatmap_day_hour_2022 <- df_2022 %>%
       margin = margin(t = 15)
     ),
     axis.line.y = element_blank(),
-    axis.text = element_text(size = 14),
+    # axis.text = element_text(size = 14),
     axis.title.x = element_text(margin = margin(t = 10)),
     axis.ticks = element_blank(),
     # axis.line.x = element_line(),
@@ -380,7 +382,7 @@ heatmap_description <- df_2022 %>%
     ),
     plot.title = element_text(
       family = "patua-one",
-      size = 20,
+      # size = 20,
       margin = margin(b = 5)
     ),
     plot.subtitle = element_text(margin = margin(b = 20)),
@@ -392,7 +394,7 @@ heatmap_description <- df_2022 %>%
     ),
     axis.line.y = element_blank(),
     axis.title.x = element_text(margin = margin(t = 10)),
-    axis.text = element_text(size = 14),
+    # axis.text = element_text(size = 14),
     axis.ticks = element_blank(),
     # axis.line.x = element_line(),
     # axis.line.x.bottom = element_blank(),
@@ -445,7 +447,7 @@ status_bar <- df_2022 %>%
     ),
     plot.title = element_markdown(
       family = "patua-one",
-      size = 20,
+      # size = 20,
       margin = margin(b = 5)
     ),
     plot.subtitle = element_markdown(margin = margin(b = 10)),
@@ -457,7 +459,7 @@ status_bar <- df_2022 %>%
     ),
     axis.line.y = element_blank(),
     axis.title.x = element_text(margin = margin(t = 10)),
-    axis.text = element_text(size = 14),
+    # axis.text = element_text(size = 14),
     axis.ticks = element_blank(),
     # axis.line.x = element_line(),
     # axis.line.x.bottom = element_blank(),
@@ -532,7 +534,7 @@ status_bar_count <- df_2022 %>%
     breaks = c("Open", "In-Progress")
   ) +
   labs(
-    title = glue("There are {open_inprogress} DC Service Calls (311) that remain Open or In-progess since 1 Jan 2022"),
+    title = glue("{open_inprogress} DC Service Calls (311) remain Open or In-progess since 1 Jan 2022"),
     subtitle = glue("of which {open} are Open and {in_progress} are In-Progess"),
     caption = caption,
     y = NULL,
@@ -546,7 +548,7 @@ status_bar_count <- df_2022 %>%
     ),
     plot.title = element_textbox_simple(
       family = "patua-one",
-      size = 20,
+      # size = 20,
       margin = margin(b = 5)
     ),
     plot.subtitle = element_markdown(margin = margin(b = 20)),
@@ -562,7 +564,7 @@ status_bar_count <- df_2022 %>%
     axis.text.y = element_blank(),
     # axis.text.x = element_blank(),
     # axis.line.x = element_blank(),
-    axis.text = element_text(size = 14),
+    # axis.text = element_text(size = 14),
     axis.ticks = element_blank(),
     # axis.line.x = element_line(),
     # axis.line.x.bottom = element_blank(),
@@ -622,7 +624,7 @@ open_requests <- df_2022 %>%
     label = glue("{count_open_7}\n7-days ago")
   ) +
   labs(
-    title = glue("There are {count_open_now} DC Service Calls (311) that remain <span style='color: #E1DABF'>Open</span> since 1 Jan 2022"),
+    title = glue("{count_open_now} DC Service Calls (311) remain <span style='color: #E1DABF'>Open</span> since 1 Jan 2022"),
     subtitle = glue("That is an {open_diff_text} of {open_diff} from 7-days ago"),
     caption = caption,
     y = NULL,
@@ -636,7 +638,7 @@ open_requests <- df_2022 %>%
     ),
     plot.title = element_textbox_simple(
       family = "patua-one",
-      size = 20,
+      # size = 20,
       margin = margin(b = 5)
     ),
     plot.subtitle = element_markdown(margin = margin(b = 20)),
@@ -652,7 +654,7 @@ open_requests <- df_2022 %>%
     axis.text.y = element_blank(),
     # axis.text.x = element_blank(),
     # axis.line.x = element_blank(),
-    axis.text = element_text(size = 14),
+    # axis.text = element_text(size = 14),
     axis.ticks = element_blank(),
     # axis.line.x = element_line(),
     # axis.line.x.bottom = element_blank(),
@@ -724,7 +726,7 @@ inprogress_requests <- df_2022 %>%
     ),
     plot.title = element_textbox_simple(
       family = "patua-one",
-      size = 20,
+      # size = 20,
       margin = margin(b = 5)
     ),
     plot.subtitle = element_markdown(margin = margin(b = 20)),
@@ -740,7 +742,7 @@ inprogress_requests <- df_2022 %>%
     axis.text.y = element_blank(),
     # axis.text.x = element_blank(),
     # axis.line.x = element_blank(),
-    axis.text = element_text(size = 14),
+    # axis.text = element_text(size = 14),
     axis.ticks = element_blank(),
     # axis.line.x = element_line(),
     # axis.line.x.bottom = element_blank(),
@@ -812,7 +814,7 @@ dayspastdue <- df_2022 %>%
     ),
     plot.title = element_markdown(
       family = "patua-one",
-      size = 20,
+      # size = 20,
       margin = margin(b = 5)
     ),
     plot.subtitle = element_markdown(margin = margin(b = 10)),
@@ -825,7 +827,7 @@ dayspastdue <- df_2022 %>%
     axis.line.y = element_blank(),
     axis.title.x = element_text(margin = margin(t = 10)),
     axis.ticks = element_blank(),
-    axis.text = element_text(size = 14),
+    # axis.text = element_text(size = 14),
     # axis.line.x = element_line(),
     # axis.line.x.bottom = element_blank(),
     legend.position = "bottom",
