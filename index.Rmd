@@ -7,7 +7,7 @@ output:
     code_folding: hide
 ---
 
-![](https://github.com/Barnes7599/DCServiceRequests/blob/main/311.png?raw=true)
+![](https://github.com/Barnes7599/DCServiceRequests311/blob/main/311.png?raw=true)
 Disclaimer: This project is not affiliated, associated, authorized, endorsed by, or in any way officially connected with DC 311, or any of its subsidiaries or its affiliates. The official DC 311 website can be found [here](https://311.dc.gov/citizen/home)
 
 ---
@@ -160,7 +160,7 @@ I typically use the [janitor](https://github.com/sfirke/janitor) package wheneve
 
 ```{r, echo= TRUE}
 
-service_calls_2022 <- read_csv("https://raw.githubusercontent.com/Barnes7599/DCServiceRequests/main/DC_service_calls.csv") %>%
+service_calls_2022 <- read_csv("https://raw.githubusercontent.com/Barnes7599/DCServiceRequests311/main/DC_service_calls.csv") %>%
   janitor::clean_names()
 
 head(service_calls_2022)
