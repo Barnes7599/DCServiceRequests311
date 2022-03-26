@@ -146,7 +146,7 @@ library(ggtext)
 library(glue)
 library(patchwork)
 library(gt)
-library(plotly)
+
 ```
 
 ---
