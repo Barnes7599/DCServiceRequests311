@@ -152,8 +152,6 @@ library(showtext)
 library(ggtext)
 library(glue)
 library(patchwork)
-library(gt)
-
 ```
 
 ---
@@ -163,15 +161,15 @@ library(gt)
 Data set is located at:[Dataset](https://opendata.dc.gov/datasets/311-city-service-requests-in-2022/explore?location=39.982830%2C-78.566945%2C8.99&showTable=true) <br>
 Dataset about page located here:[About](https://opendata.dc.gov/datasets/DCGIS::311-city-service-requests-in-2022/about)
 
-I typically use the [janitor](https://github.com/sfirke/janitor) package whenever I read in a data set. it cleans up the column headings by making them all lower case and placing an underscore between spaces. So let's read in the data and look at the top 6 rows of the data frame.
+I typically use the [janitor](https://github.com/sfirke/janitor) package whenever I read in a data set. it cleans up the column headings by making them all lower case and placing an underscore between spaces. 
 
 ```{r, echo= TRUE}
 
 service_calls_2022 <- read_csv("https://raw.githubusercontent.com/Barnes7599/DCServiceRequests311/main/DC_service_calls.csv") %>%
   janitor::clean_names()
-
-head(service_calls_2022)
 ```
+
+
 
 ---
 
@@ -191,7 +189,6 @@ font_add_google(family = "montserrat", "Montserrat")
 
 # function used to tell the code below use the above fonts
 showtext_auto()
-
 ```
 
 ---
@@ -238,7 +235,6 @@ df_2022 <- service_calls_2022 %>%
     # Pulling out the hour in the time group
     hourorderdate = hour(serviceorderdate)
   )
-
 ```
 
 ---
@@ -300,12 +296,12 @@ heatmap_day_hour_2022 <- df_2022 %>%
   theme_classic() +
   theme(
     text = element_text(
-      # family = "montserrat",
+      family = "montserrat",
       size = 16
     ),
     plot.title = element_markdown(
-      # family = "patua-one",
-      # size = 20,
+      family = "patua-one",
+      size = 20,
       margin = margin(b = 15)
     ),
     plot.subtitle = element_markdown(margin = margin(b = 10)),
@@ -316,7 +312,7 @@ heatmap_day_hour_2022 <- df_2022 %>%
       margin = margin(t = 15)
     ),
     axis.line.y = element_blank(),
-    # axis.text = element_text(size = 14),
+    axis.text = element_text(size = 14),
     axis.title.x = element_text(margin = margin(t = 10)),
     axis.ticks = element_blank(),
     # axis.line.x = element_line(),
@@ -326,15 +322,14 @@ heatmap_day_hour_2022 <- df_2022 %>%
   )
 
 heatmap_day_hour_2022
-
 ```
 
 As you can see the heatmap shows the day of week and the time of day when the service center receives the majority of calls. The blue represents the busiest times for the call center. A manger could use this to help shape their staffing requirements at the call center.
 
-We can also make the heatmap interactive with just a few lines of code using the [highcharter](https://jkunst.com/highcharter/) package. Check it out! 
+We can also change the colors and make the heatmap interactive with just a few lines of code using the [highcharter](https://jkunst.com/highcharter/) package. Check it out! 
 
 
-```{r, echo=TRUE, fig.width=8.5}
+```{r, echo=TRUE, fig.width=9}
 
 library(highcharter)
 
@@ -343,10 +338,10 @@ h2 <- df_2022 %>%
   mutate(dayorderdate = fct_rev(dayorderdate)) %>%
   group_by(dayorderdate, hourorderdate) %>%
   summarise(N = n(), .groups = "drop") %>%
-  as_tibble() 
+  as_tibble()
 
 fntltp <- JS("function(){
-  return 'Hour: ' + this.point.x + ' ' +  
+  return 'Hour: ' + this.point.x + ' ' +
   'Day: ' + this.series.yAxis.categories[this.point.y] + ': ' +
   Highcharts.numberFormat(this.point.value, 0);
 }")
@@ -355,54 +350,51 @@ hchart(
   h2,
   type = "heatmap",
   hcaes(
-    x = hourorderdate, 
-    y = dayorderdate, 
+    x = hourorderdate,
+    y = dayorderdate,
     value = N
-    )
-  ) %>% 
+  )
+) %>%
   hc_colorAxis(
-    stops = color_stops(10, viridisLite::inferno(10, direction = -1)) 
-  ) %>% 
+    stops = color_stops(10, viridisLite::inferno(10, direction = -1))
+  ) %>%
   hc_title(
-    text = "DC Service Calls (311) in 2022 by Day and Hour"
+    text = "Number of DC Service Calls (311) in 2022 by Day and Hour"
     # style = list(fontFamily = "patua-one")
-  ) %>% 
-    hc_subtitle(
+  ) %>%
+  hc_subtitle(
     text = "Interactivity is cool!",
     style = list(fontsize = "20px")
-  ) %>% 
+  ) %>%
   hc_tooltip(
     formatter = fntltp
-  ) %>% 
-    hc_xAxis(
-      title = list(text = ""),
-      labels = list(style = list(fontSize = "16px"))
-      ) %>% 
-    hc_yAxis(
-      title = list(text = ""),
-      labels = list(style = list(fontSize = "16px"))
-      ) %>% 
-   hc_legend(
+  ) %>%
+  hc_xAxis(
+    title = list(text = ""),
+    labels = list(style = list(fontSize = "16px"))
+  ) %>%
+  hc_yAxis(
+    title = list(text = ""),
+    labels = list(style = list(fontSize = "16px"))
+  ) %>%
+  hc_legend(
     layout = "vertical",
     verticalAlign = "middle",
     align = "right",
     valueDecimals = 0
-    ) %>%
-  hc_size(height = 400
-    ) %>% 
+  ) %>%
+  hc_size(height = 400) %>%
   hc_chart(
     style = list(fontFamily = "montserrat")
-  ) %>% 
+  ) %>%
   hc_caption(
     text = caption
-    ) %>% 
+  ) %>%
   hc_credits(
     text = "Chart created using R and highcharter",
     href = "http://jkunst.com/highcharter",
     enabled = TRUE
-    )
-
-
+  )
 ```
 
 
@@ -464,7 +456,7 @@ heatmap_description <- df_2022 %>%
     ),
     plot.title = element_text(
       family = "patua-one",
-      # size = 20,
+      size = 20,
       margin = margin(b = 5)
     ),
     plot.subtitle = element_text(margin = margin(b = 20)),
@@ -476,7 +468,7 @@ heatmap_description <- df_2022 %>%
     ),
     axis.line.y = element_blank(),
     axis.title.x = element_text(margin = margin(t = 10)),
-    # axis.text = element_text(size = 14),
+    axis.text = element_text(size = 14),
     axis.ticks = element_blank(),
     # axis.line.x = element_line(),
     # axis.line.x.bottom = element_blank(),
@@ -497,17 +489,17 @@ We can also use an interactive bar chart to plot to see what are the most reques
 subtitle_interactive <- glue("Top 3 services requested: {req1}, {req2}, and {req3}")
 
 df_2022 %>%
-  count(servicecodedescription, sort = TRUE) %>% 
-  top_n(n = 20) %>% 
-  
+  count(servicecodedescription, sort = TRUE) %>%
+  top_n(n = 20) %>%
   hchart(
-    type = "bar", 
+    type = "bar",
     hcaes(
-      x = servicecodedescription, 
-      y = n),
-      color = col2
-    ) %>% 
-    hc_title(
+      x = servicecodedescription,
+      y = n
+    ),
+    color = col2
+  ) %>%
+  hc_title(
     text = "
       <p style='text-align:left;'>
         <b>Top 20 Services Requested</b>
@@ -516,33 +508,31 @@ df_2022 %>%
     ",
     align = "left",
     useHTML = TRUE
-    ) %>% 
+  ) %>%
   hc_xAxis(
     title = list(text = ""),
-     labels = list(style = list(fontSize = "16px"))
-    ) %>% 
+    labels = list(style = list(fontSize = "16px"))
+  ) %>%
   hc_subtitle(
     text = subtitle_interactive,
     align = "left"
-  ) %>% 
+  ) %>%
   hc_yAxis(
     title = list(text = "Number of Requests"),
-     labels = list(style = list(fontSize = "16px"))
-    ) %>%   
+    labels = list(style = list(fontSize = "16px"))
+  ) %>%
   hc_chart(
     style = list(fontFamily = "montserrat")
   ) %>%
   hc_caption(
     text = caption
-    ) %>% 
-  hc_size(height = 700
-    ) %>% 
+  ) %>%
+  hc_size(height = 700) %>%
   hc_credits(
     text = "Chart created using R and highcharter",
     href = "http://jkunst.com/highcharter",
     enabled = TRUE
-    )
-
+  )
 ```
 For more information on highcharter: 
 [highchart cheatsheet](https://gist.github.com/mulhoon/63b5d5a98ef0ab8c2b89#file-highcharts-cheat-sheet)|
@@ -578,7 +568,7 @@ status_bar <- df_2022 %>%
   # geom_text(label = n) +
   geom_hline(yintercept = 0) +
   labs(
-    title = glue("{pcttotalclosed} of DC Service Calls (311) have been closed that were opened since 1 Jan 2022"),
+    title = glue("{pcttotalclosed} of DC Service Calls (311) have been closed since 1 Jan 2022"),
     subtitle = glue("of those that are not closed the majority are either Open or In-Progress"),
     caption = caption,
     y = NULL,
@@ -592,7 +582,7 @@ status_bar <- df_2022 %>%
     ),
     plot.title = element_markdown(
       family = "patua-one",
-      # size = 20,
+      size = 20,
       margin = margin(b = 5)
     ),
     plot.subtitle = element_markdown(margin = margin(b = 10)),
@@ -604,7 +594,7 @@ status_bar <- df_2022 %>%
     ),
     axis.line.y = element_blank(),
     axis.title.x = element_text(margin = margin(t = 10)),
-    # axis.text = element_text(size = 14),
+    axis.text = element_text(size = 14),
     axis.ticks = element_blank(),
     # axis.line.x = element_line(),
     # axis.line.x.bottom = element_blank(),
@@ -693,7 +683,7 @@ status_bar_count <- df_2022 %>%
     ),
     plot.title = element_textbox_simple(
       family = "patua-one",
-      # size = 20,
+      size = 20,
       margin = margin(b = 5)
     ),
     plot.subtitle = element_markdown(margin = margin(b = 20)),
@@ -709,7 +699,7 @@ status_bar_count <- df_2022 %>%
     axis.text.y = element_blank(),
     # axis.text.x = element_blank(),
     # axis.line.x = element_blank(),
-    # axis.text = element_text(size = 14),
+    axis.text = element_text(size = 14),
     axis.ticks = element_blank(),
     # axis.line.x = element_line(),
     # axis.line.x.bottom = element_blank(),
@@ -783,7 +773,7 @@ open_requests <- df_2022 %>%
     ),
     plot.title = element_textbox_simple(
       family = "patua-one",
-      # size = 20,
+      size = 20,
       margin = margin(b = 5)
     ),
     plot.subtitle = element_markdown(margin = margin(b = 20)),
@@ -799,7 +789,7 @@ open_requests <- df_2022 %>%
     axis.text.y = element_blank(),
     # axis.text.x = element_blank(),
     # axis.line.x = element_blank(),
-    # axis.text = element_text(size = 14),
+    axis.text = element_text(size = 14),
     axis.ticks = element_blank(),
     # axis.line.x = element_line(),
     # axis.line.x.bottom = element_blank(),
@@ -871,7 +861,7 @@ inprogress_requests <- df_2022 %>%
     ),
     plot.title = element_textbox_simple(
       family = "patua-one",
-      # size = 20,
+      size = 20,
       margin = margin(b = 5)
     ),
     plot.subtitle = element_markdown(margin = margin(b = 20)),
@@ -887,7 +877,7 @@ inprogress_requests <- df_2022 %>%
     axis.text.y = element_blank(),
     # axis.text.x = element_blank(),
     # axis.line.x = element_blank(),
-    # axis.text = element_text(size = 14),
+    axis.text = element_text(size = 14),
     axis.ticks = element_blank(),
     # axis.line.x = element_line(),
     # axis.line.x.bottom = element_blank(),
@@ -897,7 +887,6 @@ inprogress_requests <- df_2022 %>%
   )
 
 inprogress_requests
-
 ```
 
 Now let's focus on if service requests are Open or In-Progress are any of them past due? We can capture the average days past due by grouping the service code description and summarizing the data by the mean days to resolve and mean days past due (days to resolve and days past due where columns we added when we wrangled the data frame)
@@ -959,7 +948,7 @@ dayspastdue <- df_2022 %>%
     ),
     plot.title = element_markdown(
       family = "patua-one",
-      # size = 20,
+      size = 20,
       margin = margin(b = 5)
     ),
     plot.subtitle = element_markdown(margin = margin(b = 10)),
@@ -972,7 +961,7 @@ dayspastdue <- df_2022 %>%
     axis.line.y = element_blank(),
     axis.title.x = element_text(margin = margin(t = 10)),
     axis.ticks = element_blank(),
-    # axis.text = element_text(size = 14),
+    axis.text = element_text(size = 14),
     # axis.line.x = element_line(),
     # axis.line.x.bottom = element_blank(),
     legend.position = "bottom",
@@ -980,9 +969,6 @@ dayspastdue <- df_2022 %>%
   )
 
 dayspastdue
-
 ```
 
 ---
-
-
