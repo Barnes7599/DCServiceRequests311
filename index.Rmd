@@ -6,13 +6,18 @@ output:
     theme: "yeti"
     code_folding: hide
     includes:
+      before_body: header.html
       after_body: footer.html
 ---
 
-<center>
-![](https://github.com/Barnes7599/DCServiceRequests311/blob/main/311.png?raw=true)
+<div class="mycontent">
+
+<!-- <center> -->
+<!-- ![](https://github.com/Barnes7599/DCServiceRequests311/blob/main/311.png?raw=true) -->
 Disclaimer: This project is not affiliated, associated, authorized, endorsed by, or in any way officially connected with DC 311, or any of its subsidiaries or its affiliates. The official DC 311 website can be found [here](https://311.dc.gov/citizen/home)
-</center>
+<!-- </center> -->
+<br><br>
+
 
 ---
 
@@ -241,11 +246,18 @@ df_2022 <- service_calls_2022 %>%
 
 ## Heatmaps
 
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 10px;}
+</style>
+<div class = "blue">
+
 Why heatmaps? One because they are fun...and humans have limitations to the amount of information that we can process and pay attention to at the same time. For example, it is challenging for anyone to perform mental math, while at the same time interpreting textual information. However, humans are very efficient at identifying differences in certain types of visual characteristics, such as color, size, shape and orientation. By definition, heatmap visualization or heatmap data visualization is a method of graphically representing numerical data where the value of each data point is indicated using colors. 
 
 Our brains process sensory input quickly and automatically, before we are paying conscious attention. This type of processing is called pre-attentive processing.<sup>[1](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5313506/)</sup> For visual processing there are certain attributes that the human visual system processes in this fast-automatic way. These attributes are known as pre-attentive attributes.<sup>[2](https://www.perceptualedge.com/articles/ie/visual_perception.pdf)</sup> We notice and process these attributes before we concentrate and focus on them. When pre-attentive attributes are used strategically in visualizations, viewers process that information very quickly. Pre-attentive attributes help avoid the mind-numbing work of concentrating and consciously interpreting information, which most people either do not want to do or have no time to do. 
 
 Heatmaps are crucial to visualize behavior data so that decision makers can identify the potential problem areas, best practices or visitor interaction
+
+</div>
 
 ---
 
