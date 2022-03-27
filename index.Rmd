@@ -5,10 +5,14 @@ output:
     toc_float: true
     theme: "yeti"
     code_folding: hide
+    includes:
+      after_body: footer.html
 ---
 
+<center>
 ![](https://github.com/Barnes7599/DCServiceRequests311/blob/main/311.png?raw=true)
 Disclaimer: This project is not affiliated, associated, authorized, endorsed by, or in any way officially connected with DC 311, or any of its subsidiaries or its affiliates. The official DC 311 website can be found [here](https://311.dc.gov/citizen/home)
+</center>
 
 ---
 
@@ -125,14 +129,14 @@ code[class] {
 ```
 
 
-<div class="footer">
-  <p> barnes7599@gmail.com |  Updated  <script> document.write(new Date().toLocaleDateString()); </script> </p>
-</div>
-<style type="text/css">
-h4.date {
-  text-align: right;
-}
-</style>
+<!-- <div class="footer"> -->
+<!--   <p> barnes7599@gmail.com |  Updated  <script> document.write(new Date().toLocaleDateString()); </script> </p> -->
+<!-- </div> -->
+<!-- <style type="text/css"> -->
+<!-- h4.date { -->
+<!--   text-align: right; -->
+<!-- } -->
+<!-- </style> -->
 
 
 ### Load Libraries
@@ -140,6 +144,7 @@ h4.date {
 Load packages - you may need to install packages using the install.packages() function. Make sure you put the package name in quotes like install.packages("tidyverse"), you will only have to do this once. 
 
 ```{r, echo = TRUE}
+
 library(tidyverse)
 library(lubridate)
 library(readxl)
@@ -186,6 +191,7 @@ font_add_google(family = "montserrat", "Montserrat")
 
 # function used to tell the code below use the above fonts
 showtext_auto()
+
 ```
 
 ---
@@ -232,6 +238,7 @@ df_2022 <- service_calls_2022 %>%
     # Pulling out the hour in the time group
     hourorderdate = hour(serviceorderdate)
   )
+
 ```
 
 ---
@@ -293,13 +300,13 @@ heatmap_day_hour_2022 <- df_2022 %>%
   theme_classic() +
   theme(
     text = element_text(
-      family = "montserrat",
+      # family = "montserrat",
       size = 16
     ),
     plot.title = element_markdown(
-      family = "patua-one",
+      # family = "patua-one",
       # size = 20,
-      margin = margin(b = 5)
+      margin = margin(b = 15)
     ),
     plot.subtitle = element_markdown(margin = margin(b = 10)),
     plot.title.position = "plot",
@@ -322,7 +329,82 @@ heatmap_day_hour_2022
 
 ```
 
-As you can see the heatmap shows the day of week and the time of day when the service center receives the majority of calls. The blue represents the busiest times for the call center. A manger could use this to help shape their staffing requirements at the call center. A cool comparison could be if we capture the data from 2019 a year prior to the pandemic with an assumption that the distribution of day and time would be different. This may help gain some insight on whether or not remote work is contributing to an increase in calls during the day since there is an assumption that more people are working from home now compared to 2019. We will save that for another project! 
+As you can see the heatmap shows the day of week and the time of day when the service center receives the majority of calls. The blue represents the busiest times for the call center. A manger could use this to help shape their staffing requirements at the call center.
+
+We can also make the heatmap interactive with just a few lines of code using the [highcharter](https://jkunst.com/highcharter/) package. Check it out! 
+
+
+```{r, echo=TRUE, fig.width=8.5}
+
+library(highcharter)
+
+h2 <- df_2022 %>%
+  select(dayorderdate, hourorderdate) %>%
+  mutate(dayorderdate = fct_rev(dayorderdate)) %>%
+  group_by(dayorderdate, hourorderdate) %>%
+  summarise(N = n(), .groups = "drop") %>%
+  as_tibble() 
+
+fntltp <- JS("function(){
+  return 'Hour: ' + this.point.x + ' ' +  
+  'Day: ' + this.series.yAxis.categories[this.point.y] + ': ' +
+  Highcharts.numberFormat(this.point.value, 0);
+}")
+
+hchart(
+  h2,
+  type = "heatmap",
+  hcaes(
+    x = hourorderdate, 
+    y = dayorderdate, 
+    value = N
+    )
+  ) %>% 
+  hc_colorAxis(
+    stops = color_stops(10, viridisLite::inferno(10, direction = -1)) 
+  ) %>% 
+  hc_title(
+    text = "DC Service Calls (311) in 2022 by Day and Hour"
+    # style = list(fontFamily = "patua-one")
+  ) %>% 
+    hc_subtitle(
+    text = "Interactivity is cool!",
+    style = list(fontsize = "20px")
+  ) %>% 
+  hc_tooltip(
+    formatter = fntltp
+  ) %>% 
+    hc_xAxis(
+      title = list(text = ""),
+      labels = list(style = list(fontSize = "16px"))
+      ) %>% 
+    hc_yAxis(
+      title = list(text = ""),
+      labels = list(style = list(fontSize = "16px"))
+      ) %>% 
+   hc_legend(
+    layout = "vertical",
+    verticalAlign = "middle",
+    align = "right",
+    valueDecimals = 0
+    ) %>%
+  hc_size(height = 400
+    ) %>% 
+  hc_chart(
+    style = list(fontFamily = "montserrat")
+  ) %>% 
+  hc_caption(
+    text = caption
+    ) %>% 
+  hc_credits(
+    text = "Chart created using R and highcharter",
+    href = "http://jkunst.com/highcharter",
+    enabled = TRUE
+    )
+
+
+```
+
 
 ---
 
@@ -404,6 +486,69 @@ heatmap_description <- df_2022 %>%
 
 heatmap_description
 ```
+
+---
+
+We can also use an interactive bar chart to plot to see what are the most requested services. 
+
+
+```{r, echo=TRUE, fig.width=8.5}
+
+subtitle_interactive <- glue("Top 3 services requested: {req1}, {req2}, and {req3}")
+
+df_2022 %>%
+  count(servicecodedescription, sort = TRUE) %>% 
+  top_n(n = 20) %>% 
+  
+  hchart(
+    type = "bar", 
+    hcaes(
+      x = servicecodedescription, 
+      y = n),
+      color = col2
+    ) %>% 
+    hc_title(
+    text = "
+      <p style='text-align:left;'>
+        <b>Top 20 Services Requested</b>
+        <br>
+      </p>
+    ",
+    align = "left",
+    useHTML = TRUE
+    ) %>% 
+  hc_xAxis(
+    title = list(text = ""),
+     labels = list(style = list(fontSize = "16px"))
+    ) %>% 
+  hc_subtitle(
+    text = subtitle_interactive,
+    align = "left"
+  ) %>% 
+  hc_yAxis(
+    title = list(text = "Number of Requests"),
+     labels = list(style = list(fontSize = "16px"))
+    ) %>%   
+  hc_chart(
+    style = list(fontFamily = "montserrat")
+  ) %>%
+  hc_caption(
+    text = caption
+    ) %>% 
+  hc_size(height = 700
+    ) %>% 
+  hc_credits(
+    text = "Chart created using R and highcharter",
+    href = "http://jkunst.com/highcharter",
+    enabled = TRUE
+    )
+
+```
+For more information on highcharter: 
+[highchart cheatsheet](https://gist.github.com/mulhoon/63b5d5a98ef0ab8c2b89#file-highcharts-cheat-sheet)|
+[another cheatsheet](https://www.kaggle.com/code/nulldata/beginners-guide-to-highchart-visual-in-r/report#themes)|
+[highchartr documentation](https://cran.r-project.org/web/packages/highcharter/highcharter.pdf)|
+[highchart for R users](https://www.highcharts.com/blog/tutorials/highcharts-for-r-users/)
 
 ---
 
@@ -840,4 +985,4 @@ dayspastdue
 
 ---
 
-<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">Creative Commons Attribution-NonCommercial 4.0 International License</a>.
+
