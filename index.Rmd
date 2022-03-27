@@ -496,7 +496,7 @@ heatmap_description
 We can also use an interactive bar chart to plot to see what are the most requested services. 
 
 
-```{r, echo=TRUE, fig.width=9,fig.height=5}
+```{r, echo=TRUE, fig.height=5}
 
 subtitle_interactive <- glue("Top 3 services requested: {req1}, {req2}, and {req3}")
 
@@ -618,7 +618,7 @@ status_bar <- df_2022 %>%
 ```
 
 
-```{r, echo=TRUE,fig.width=9,fig.height=5}
+```{r, echo=TRUE,fig.height=5}
 
 status_bar_capation = glue("Status of Service Requests as of {max_date_2022}")
 
@@ -677,7 +677,7 @@ This seems ok, but do we really care about the service calls that have been Canc
 
 <h3> **Open and In-Progress** </h3>
 
-```{r, echo=TRUE, fig.width=10,fig.height=3}
+```{r, echo=TRUE, fig.height=3}
 
 open_inprogress <- df_2022 %>%
   filter(status %in% c("Open", "In-Progress")) %>%
@@ -1039,7 +1039,7 @@ Now let's focus on if service requests are Open or In-Progress are any of them p
 ```
 
 
-```{r, echo=TRUE, fig.width=9, fig.height=5}
+```{r, echo=TRUE, fig.height=5}
 
 pastdue_bar_caption <- glue("Past Due Status as of {max_date_2022}")
 
