@@ -1042,7 +1042,7 @@ hcmap("countries/us/us-dc-all",
     type = "mappoint",
     name = " Illegal Dumping",
     showInLegend = FALSE,
-    maxSize = ".8",
+    maxSize = "2",
     tooltip = list(
       pointFormat = "Zip: {point.zip} | Ward: {point.ward} <br>
       ({point.lat:,.2f}, {point.lon:,.2f})"
