@@ -47,104 +47,10 @@ knitr::opts_chunk$set(
   fig.align = "center",
   tidy = "formatR"
 )
-
+options(scipen = 999) # keep scientific notation turned off
 unlink("index.cache", recursive = TRUE)
-```
-
-
-```{css headings, echo = FALSE}
-# 
-# p {
-# color: black;
-# margin: 30px 0 20px 0;
-# }
-# 
-# td {
-#     padding: 3px 10px 3px 10px;
-#     text-align: center;
-# }
-# 
-# table
-# { 
-#     margin-left: auto;
-#     margin-right: auto;
-#     margin-top:80px;
-#     margin-bottom:100px;
-# }
-# 
-# h1, h2{
-#   margin-top:30px;
-#   margin-bottom:20px;
-# }
-# 
-# h3{
-#   margin-top:50px;
-#   margin-bottom:20px;
-# }
-# 
-# h4{
-#   margin-top:30px;
-#   margin-bottom:5px;
-# }
-# 
-# H5{
-#     text-align: center;
-#     color: gray;
-#     font-size:2em;
-# }
-# 
-# img {
-#     max-width: 100%;
-#     display: block;
-#     margin-right: auto;
-#     margin-left: auto;
-#     margin-top: auto;
-#     margin-bottom: auto;
-# }
-# 
-# pre {
-#   overflow-x: auto;
-# }
-# 
-# pre code {
-#    display: block; 
-#    padding: 0.5em;
-#    margin-bottom:10px;
-# }
-# 
-# 
-# code {
-#   font-size: 100%;
-#   border: 10px solid light gray;
-#   margin-bottom: 2px;
-# }
-# 
-# code[class] {
-#   background-color: light gray,
-#   margin-bottom; 15px;
-# }
-# 
-# .footer {
-#     position: fixed;
-#     left: 0;
-#     right: 0;
-#     bottom: 0;
-#     width: 100%;
-#     text-align: right;
-# }
 
 ```
-
-
-<!-- <div class="footer"> -->
-<!--   <p> barnes7599@gmail.com |  Updated  <script> document.write(new Date().toLocaleDateString()); </script> </p> -->
-<!-- </div> -->
-<!-- <style type="text/css"> -->
-<!-- h4.date { -->
-<!--   text-align: right; -->
-<!-- } -->
-<!-- </style> -->
-
 
 <h3> **Load Libraries** </h3>
 
@@ -159,6 +65,8 @@ library(showtext)
 library(ggtext)
 library(glue)
 library(patchwork)
+library(highcharter)
+
 ```
 
 ---
@@ -333,7 +241,6 @@ heatmap_day_hour_2022 <- df_2022 %>%
   )
 
 heatmap_day_hour_2022
-
 ```
 
 As you can see the heatmap shows the day of week and the time of day when the service center receives the majority of calls. The blue represents the busiest times for the call center. A manger could use this to help shape their staffing requirements at the call center.
@@ -613,17 +520,15 @@ status_bar <- df_2022 %>%
     legend.position = "bottom",
     plot.margin = margin(t = 10, r = 20, b = 10, l = 20)
   )
-
-
 ```
 
 
 ```{r, echo=TRUE,fig.width=9,fig.height=5}
 
-status_bar_capation = glue("Status of Service Requests as of {max_date_2022}")
+status_bar_capation <- glue("Status of Service Requests as of {max_date_2022}")
 
-df_2022 %>% 
-  count(status, sort = TRUE) %>% 
+df_2022 %>%
+  count(status, sort = TRUE) %>%
   hchart(
     type = "bar",
     hcaes(
@@ -666,10 +571,6 @@ df_2022 %>%
     href = "http://jkunst.com/highcharter",
     enabled = TRUE
   )
-
-
-
-
 ```
 This seems ok, but do we really care about the service calls that have been Canceled, Closed (Transferred) or Open (Duplicates)? I do not believe it gives us any information that we can make possible decisions on. I think making a stacked bar chart of the tickets that are Open or In-Progress may be a neat may to visualizes the information so that when we can measure progress on closing requests. Plus, I think it would be fun if we made the title and subtitle dynamic by including the number of service calls and a breakdown of what percent is Open vs In-Progress. 
 
@@ -973,10 +874,10 @@ Now let's focus on if service requests are Open or In-Progress are any of them p
 #   mutate(percent_of_total = n / sum(n)) %>%
 #   filter(countpastdue == "On Time") %>%
 #   pull()
-# 
+#
 # percent_on_time <- as.double(round(percent_on_time, digits = 3)) %>% scales::percent()
-# 
-# 
+#
+#
 # dayspastdue <- df_2022 %>%
 #   select(servicecodedescription, status, daystoresolve, dayspastdue) %>%
 #   filter(status == "Closed") %>%
@@ -1034,8 +935,6 @@ Now let's focus on if service requests are Open or In-Progress are any of them p
 #     legend.position = "bottom",
 #     plot.margin = margin(t = 10, r = 20, b = 10, l = 20)
 #   )
-
-
 ```
 
 
@@ -1056,8 +955,8 @@ df_2022 %>%
     avgpastdue = mean(dayspastdue),
     .groups = "drop"
   ) %>%
-  top_n(10) %>% 
-  arrange(desc(avgpastdue)) %>% 
+  top_n(10) %>%
+  arrange(desc(avgpastdue)) %>%
   hchart(
     type = "bar",
     hcaes(
@@ -1065,7 +964,7 @@ df_2022 %>%
       y = avgpastdue
     ),
     color = col2
-  ) %>%
+  ) %>% 
   hc_title(
     text = "
       <p style='text-align:left;'>
@@ -1083,7 +982,7 @@ df_2022 %>%
   hc_subtitle(
     text = pastdue_bar_caption,
     align = "left"
-  ) %>%
+  ) %>% 
   hc_yAxis(
     title = list(text = "Average Days Past Due for Selected Service"),
     labels = list(style = list(fontSize = "16px"))
@@ -1101,8 +1000,203 @@ df_2022 %>%
     enabled = TRUE
   )
 
-  
+```
+
+---
+
+<h3> **Maps** </h3>
+
+Using the DC Service Call (311) data we can use the latitude and longitude information that is provided for the location of the request to visualize the data using maps. Lets subset the data set to focus on Illegal Dumping Service Calls. 
+
+```{r, echo=TRUE}
+
+mapdata <- service_calls_2022 %>%
+  filter(servicecodedescription == "Illegal Dumping") %>%
+  select(
+    lat = latitude,
+    lon = longitude,
+    ward,
+    zip = zipcode
+  ) %>%
+  group_by(ward,zip) %>% 
+  add_count(lat, lon, zip, ward) %>%
+  tibble()
+
+
+
+ 
+
+```
+
+Very basic map visualization using [highcharter](https://jkunst.com/highcharter/articles/maps.html) package
+
+```{r, echo=TRUE, fig.width=9, fig.height=5}
+
+hcmap("countries/us/us-dc-all",
+  showInLegend = FALSE
+) %>%
+  hc_title(text = "Washington DC") %>%
+  hc_subtitle(text = "DC Service Requests 311 for Illegal Dumping") %>%
+  hc_add_series(
+    data = mapdata,
+    type = "mappoint",
+    name = " Illegal Dumping",
+    showInLegend = FALSE,
+    maxSize = ".8",
+    tooltip = list(
+      pointFormat = "Zip: {point.zip} | Ward: {point.ward} <br>
+      ({point.lat:,.2f}, {point.lon:,.2f})"
+    )
+  ) %>%
+  hc_mapNavigation(enabled = FALSE)
+
+```
+
+<h3> **Map Types** </h3>
+<br>
+
+Typically any mapping package has multiple map backgrounds. Here are the types of backgrounds when using [ggmap](). 
+Types of maps backgrounds: watercolor, toner-lite, terrain-labels, terrain-lines,toner, toner-2011, toner-background,toner-hybrid,toner-lines. More information can be found at [R Graph Gallery](https://r-graph-gallery.com/324-map-background-with-the-ggmap-library.html)
+
+```{r,echo=TRUE, fig.width=6, fig.height=6}
+library(choroplethrMaps)
+library(choroplethr)
+library(ggmap)
+library(mapproj)
+
+
+register_google(Sys.getenv("register_google"))
+
+dc <- geocode("Washington, DC")
+
+dc_map_toner_lite <- get_map(dc,
+  zoom = 12,
+  maptype = "toner-lite"
+)
+
+ggmap(dc_map_toner_lite,
+  base_layer =
+    ggplot(
+      data = mapdata,
+      aes(x = lon, y = lat)
+    )
+) +
+  geom_point(
+    color = col2,
+    size = 1.3,
+    # alpha = 0.5
+  ) +
+  theme_void() +
+  labs(
+    title = "DC Service Call Requests for Illegal Dumping",
+    caption = caption
+  ) +
+  theme(
+    plot.title = element_text(margin = margin(b = 20)),
+    plot.caption = element_text(margin = margin(t = 20))
+  ) 
 
 ```
 
 ---
+
+You can create small multiple maps using the facet wrap function. 
+
+```{r,echo=TRUE, fig.width=9, fig.height=6}
+
+parking_map <-  service_calls_2022 %>%
+  filter(servicecodedescription %in% c("Out of State Parking Violation (ROSA)", "Parking Enforcement", "Residential Parking Permit Violation" )) %>%
+  select(
+    servicecodedescription,
+    lat = latitude,
+    lon = longitude,
+    ward,
+    zip = zipcode
+  ) %>%
+  tibble()
+
+dc_map_terrian_lines <- get_map(dc,
+  zoom = 12,
+  maptype = "toner",
+  source = "stamen"
+)
+
+ggmap(dc_map_terrian_lines,
+  base_layer =
+    ggplot(
+      data = parking_map,
+      aes(x = lon, y = lat)
+    )
+) +
+  geom_point(
+    color = col2,
+    size = .8,
+    # alpha = 0.5
+  ) +
+  facet_wrap(~servicecodedescription) +
+  tidyquant::theme_tq() +
+  labs(
+    title = "DC Service Call Requests for Parking Violations",
+    caption = caption,
+    y = NULL,
+    x = NULL
+  ) +
+  theme(
+    plot.margin = margin(l=20,r=20),
+    plot.title = element_text(margin = margin(b = 20)),
+    plot.caption = element_text(margin = margin(t = 20)),
+    axis.ticks = element_blank(),
+    axis.text = element_blank()
+  ) 
+
+```
+
+
+You can also use color gradient to show occurrences, as you can see there is more parking enforcement service requests to the north and southeast of the city.
+
+```{r,echo=TRUE, fig.width=6, fig.height=6}
+
+parking_map_2 <-  service_calls_2022 %>%
+  filter(servicecodedescription == "Parking Enforcement") %>%
+  select(
+    servicecodedescription,
+    lat = latitude,
+    lon = longitude,
+    ward,
+    zip = zipcode
+  ) %>%
+  group_by(servicecodedescription, ward) %>% 
+  add_count(servicecodedescription, ward) 
+
+dc_map <- get_map(dc,
+  zoom = 12,
+  maptype = "toner-lines"
+)
+
+ggmap(dc_map,
+      base_layer =
+    ggplot(
+      data = parking_map_2,
+      aes(x = lon, 
+          y = lat,
+          color = n)
+    )) +
+  geom_point(size=1.3) +
+  scale_color_gradient(low = col1, high = col2) +
+  scale_alpha(range = c(0, 0.75), guide = "none") +
+  tidyquant::theme_tq() +
+  labs(
+    title = "DC Service Call Requests for Parking Enforcement",
+    caption = caption,
+    y = NULL,
+    x = NULL
+  ) +
+  theme(
+    plot.margin = margin(l=20,r=20),
+    plot.title = element_text(margin = margin(b = 20)),
+    plot.caption = element_text(margin = margin(t = 20)),
+    axis.ticks = element_blank(),
+    axis.text = element_blank()
+  ) 
+
+```
