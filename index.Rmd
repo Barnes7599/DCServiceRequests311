@@ -403,13 +403,13 @@ heatmap_description
 We can also use an interactive bar chart to plot to see what are the most requested services. 
 
 
-```{r, echo=TRUE, fig.width=9,fig.height=5}
+```{r, echo=TRUE, fig.width=9,fig.height=3}
 
 subtitle_interactive <- glue("Top 3 services requested: {req1}, {req2}, and {req3}")
 
 df_2022 %>%
   count(servicecodedescription, sort = TRUE) %>%
-  top_n(n = 20) %>%
+  top_n(n = 10) %>%
   hchart(
     type = "bar",
     hcaes(
@@ -520,10 +520,11 @@ status_bar <- df_2022 %>%
     legend.position = "bottom",
     plot.margin = margin(t = 10, r = 20, b = 10, l = 20)
   )
+
 ```
 
 
-```{r, echo=TRUE,fig.width=9,fig.height=5}
+```{r, echo=TRUE,fig.width=9,fig.height=3}
 
 status_bar_capation <- glue("Status of Service Requests as of {max_date_2022}")
 
@@ -571,6 +572,7 @@ df_2022 %>%
     href = "http://jkunst.com/highcharter",
     enabled = TRUE
   )
+
 ```
 This seems ok, but do we really care about the service calls that have been Canceled, Closed (Transferred) or Open (Duplicates)? I do not believe it gives us any information that we can make possible decisions on. I think making a stacked bar chart of the tickets that are Open or In-Progress may be a neat may to visualizes the information so that when we can measure progress on closing requests. Plus, I think it would be fun if we made the title and subtitle dynamic by including the number of service calls and a breakdown of what percent is Open vs In-Progress. 
 
