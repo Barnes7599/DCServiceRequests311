@@ -267,6 +267,7 @@ fntltp <- JS("function(){
   Highcharts.numberFormat(this.point.value, 0);
 }")
 
+
 hchart(
   h2,
   type = "heatmap",
@@ -315,7 +316,18 @@ hchart(
     text = "Chart created using R and highcharter",
     href = "http://jkunst.com/highcharter",
     enabled = TRUE
-  )
+  ) %>% 
+  hc_exporting(
+    enabled = TRUE, 
+    formAttributes=list(target="_blank"),
+    filename="heatmap")
+    
+    
+
+
+
+
+
 ```
 
 ---
