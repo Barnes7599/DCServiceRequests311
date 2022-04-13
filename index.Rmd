@@ -57,7 +57,6 @@ unlink("index.cache", recursive = TRUE)
 Load packages - you may need to install packages using the install.packages() function. Make sure you put the package name in quotes like install.packages("tidyverse"), you will only have to do this once. 
 
 ```{r, echo = TRUE}
-
 library(tidyverse)
 library(lubridate)
 library(readxl)
@@ -66,7 +65,6 @@ library(ggtext)
 library(glue)
 library(patchwork)
 library(highcharter)
-
 ```
 
 ---
@@ -323,11 +321,6 @@ hchart(
     filename="heatmap")
     
     
-
-
-
-
-
 ```
 
 ---
@@ -1077,7 +1070,7 @@ library(choroplethrMaps)
 library(choroplethr)
 library(ggmap)
 library(mapproj)
-
+library(tidyverse)
 
 register_google(Sys.getenv("register_google"))
 
