@@ -1069,7 +1069,6 @@ library(choroplethrMaps)
 library(choroplethr)
 library(ggmap)
 library(mapproj)
-library(tidyverse)
 
 register_google(Sys.getenv("register_google"))
 
