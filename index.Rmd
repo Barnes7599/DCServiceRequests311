@@ -44,8 +44,7 @@ knitr::opts_chunk$set(
   message = FALSE,
   warning = FALSE,
   cache = TRUE,
-  fig.align = "center",
-  tidy = "formatR"
+  fig.align = "center"
 )
 options(scipen = 999) # keep scientific notation turned off
 unlink("index.cache", recursive = TRUE)
@@ -320,7 +319,7 @@ hchart(
     formAttributes=list(target="_blank"),
     filename="heatmap")
     
-    
+
 ```
 
 ---
@@ -1207,3 +1206,5 @@ ggmap(dc_map,
   ) 
 
 ```
+
+
