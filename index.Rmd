@@ -53,17 +53,19 @@ unlink("index.cache", recursive = TRUE)
 
 <h3> **Load Libraries** </h3>
 
-Load packages - you may need to install packages using the install.packages() function. Make sure you put the package name in quotes like install.packages("tidyverse"), you will only have to do this once. 
+Load packages - When you want to add more packages just add it to the packages object. Make sure you put the package name in quotes like "tidyverse". The below will automaticall make sure you have the packages installaed and if not install it and load the packages. 
 
 ```{r, echo = TRUE}
-library(tidyverse)
-library(lubridate)
-library(readxl)
-library(showtext)
-library(ggtext)
-library(glue)
-library(patchwork)
-library(highcharter)
+  
+packages <- c("tidyverse","lubridate","readxl","showtext","ggtext","glue","patchwork","highcharter")
+           
+installed_packages <- packages %in% rownames(installed.packages()) 
+
+if (any(installed_packages == FALSE)) {
+  install.packages(packages[!installed_packages])
+}
+             
+
 ```
 
 ---
